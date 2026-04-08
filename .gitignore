@@ -1,0 +1,49 @@
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Terraform / OpenTofu
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Environment files
+.env
+.env.*
+*.local
+
+# Archives and temporary artifacts
+*.tmp
+*.bak
+*.retry
+*.log
+
+# Go build artifacts
+bin/
+dist/
+coverage.out
+
+# Python cache
+__pycache__/
+*.pyc
+
+# macOS and Linux metadata
+.AppleDouble
+.LSOverride
+
+# Generated evidence exports that should not be versioned by default
+evidence/**/*.tmp
