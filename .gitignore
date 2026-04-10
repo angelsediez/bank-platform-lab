@@ -11,7 +11,6 @@ Thumbs.db
 
 # Terraform / OpenTofu
 .terraform/
-.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
 crash.log

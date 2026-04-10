@@ -1,0 +1,67 @@
+#cloud-config
+
+hostname: ${hostname}
+fqdn: ${hostname}.${lab_domain}
+manage_etc_hosts: true
+timezone: ${timezone}
+
+package_update: true
+package_upgrade: false
+package_reboot_if_required: false
+
+packages:
+  - bash-completion
+  - ca-certificates
+  - curl
+  - jq
+  - nfs-common
+  - open-iscsi
+  - qemu-guest-agent
+  - vim
+
+users:
+  - default
+  - name: ${admin_username}
+    gecos: Lab Administrator
+    shell: /bin/bash
+    groups:
+      - sudo
+      - adm
+      - systemd-journal
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    lock_passwd: true
+    ssh_authorized_keys:
+      - "${admin_ssh_public_key}"
+
+disable_root: true
+ssh_pwauth: false
+
+write_files:
+  - path: /etc/modules-load.d/kubernetes.conf
+    owner: root:root
+    permissions: "0644"
+    content: |
+      overlay
+      br_netfilter
+
+  - path: /etc/sysctl.d/99-kubernetes.conf
+    owner: root:root
+    permissions: "0644"
+    content: |
+      net.bridge.bridge-nf-call-iptables = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.ipv4.ip_forward = 1
+
+  - path: /etc/motd
+    owner: root:root
+    permissions: "0644"
+    content: |
+      bank-platform-lab
+      Role: k3s server
+      Purpose: cluster control plane node.
+
+runcmd:
+  - modprobe overlay
+  - modprobe br_netfilter
+  - sysctl --system
+  - systemctl enable --now qemu-guest-agent

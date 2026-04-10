@@ -1,0 +1,10 @@
+libvirt_uri                 = "qemu:///system"
+libvirt_network_name        = "bank-platform-lab-net"
+libvirt_network_cidr        = "192.168.150.0/24"
+libvirt_network_domain      = "lab.internal"
+metallb_address_range_start = "192.168.150.240"
+metallb_address_range_end   = "192.168.150.250"
+
+default_timezone     = "UTC"
+admin_username       = "labadmin"
+admin_ssh_public_key = "ssh-ed25519 AAAA...replace-with-your-real-public-key"

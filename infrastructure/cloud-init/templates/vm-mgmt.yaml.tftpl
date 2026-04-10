@@ -1,0 +1,50 @@
+#cloud-config
+
+hostname: ${hostname}
+fqdn: ${hostname}.${lab_domain}
+manage_etc_hosts: true
+timezone: ${timezone}
+
+package_update: true
+package_upgrade: false
+package_reboot_if_required: false
+
+packages:
+  - bash-completion
+  - ca-certificates
+  - curl
+  - git
+  - jq
+  - qemu-guest-agent
+  - tar
+  - unzip
+  - vim
+
+users:
+  - default
+  - name: ${admin_username}
+    gecos: Lab Administrator
+    shell: /bin/bash
+    groups:
+      - sudo
+      - adm
+      - systemd-journal
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    lock_passwd: true
+    ssh_authorized_keys:
+      - "${admin_ssh_public_key}"
+
+disable_root: true
+ssh_pwauth: false
+
+write_files:
+  - path: /etc/motd
+    owner: root:root
+    permissions: "0644"
+    content: |
+      bank-platform-lab
+      Role: management
+      Purpose: infrastructure tooling, cluster administration, and validation.
+
+runcmd:
+  - systemctl enable --now qemu-guest-agent
