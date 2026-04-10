@@ -8,6 +8,11 @@ output "network_plan" {
   value       = local.network_plan
 }
 
+output "storage_plan" {
+  description = "Planned storage layout for the homelab."
+  value       = local.storage_plan
+}
+
 output "vm_plan" {
   description = "Planned virtual machine topology for the homelab."
   value       = local.vm_plan

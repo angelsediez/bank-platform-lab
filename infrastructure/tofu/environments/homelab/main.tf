@@ -9,8 +9,14 @@ locals {
     name       = var.libvirt_network_name
     mode       = "nat"
     cidr       = var.libvirt_network_cidr
+    prefix     = tonumber(split("/", var.libvirt_network_cidr)[1])
     domain     = var.libvirt_network_domain
     gateway_ip = cidrhost(var.libvirt_network_cidr, 1)
+
+    dhcp_range = {
+      start = cidrhost(var.libvirt_network_cidr, 100)
+      end   = cidrhost(var.libvirt_network_cidr, 199)
+    }
 
     management_ip = cidrhost(var.libvirt_network_cidr, 10)
     k3s_server_ip = cidrhost(var.libvirt_network_cidr, 11)
@@ -21,6 +27,13 @@ locals {
       start = var.metallb_address_range_start
       end   = var.metallb_address_range_end
     }
+  }
+
+  storage_plan = {
+    pool_name       = var.storage_pool_name
+    pool_path       = var.storage_pool_path
+    base_image_name = var.ubuntu_cloud_image_name
+    base_image_url  = var.ubuntu_cloud_image_url
   }
 
   cloud_init_templates = {
@@ -34,9 +47,12 @@ locals {
       role            = "management"
       hostname        = "vm-mgmt"
       ip_address      = local.network_plan.management_ip
+      mac_address     = "52:54:00:15:00:10"
       vcpu            = 2
       memory_mb       = 4096
       disk_gb         = 50
+      root_disk_name  = "vm-mgmt.qcow2"
+      seed_iso_name   = "vm-mgmt-seed.iso"
       cloud_init_file = local.cloud_init_templates.vm_mgmt
     }
 
@@ -44,9 +60,12 @@ locals {
       role            = "k3s-server"
       hostname        = "vm-k3s-server"
       ip_address      = local.network_plan.k3s_server_ip
+      mac_address     = "52:54:00:15:00:11"
       vcpu            = 4
       memory_mb       = 6144
       disk_gb         = 60
+      root_disk_name  = "vm-k3s-server.qcow2"
+      seed_iso_name   = "vm-k3s-server-seed.iso"
       cloud_init_file = local.cloud_init_templates.vm_k3s_server
     }
 
@@ -54,9 +73,12 @@ locals {
       role            = "k3s-worker"
       hostname        = "vm-k3s-worker-1"
       ip_address      = local.network_plan.worker_1_ip
+      mac_address     = "52:54:00:15:00:12"
       vcpu            = 4
       memory_mb       = 8192
       disk_gb         = 80
+      root_disk_name  = "vm-k3s-worker-1.qcow2"
+      seed_iso_name   = "vm-k3s-worker-1-seed.iso"
       cloud_init_file = local.cloud_init_templates.vm_k3s_worker
     }
 
@@ -64,9 +86,12 @@ locals {
       role            = "k3s-worker"
       hostname        = "vm-k3s-worker-2"
       ip_address      = local.network_plan.worker_2_ip
+      mac_address     = "52:54:00:15:00:13"
       vcpu            = 4
       memory_mb       = 8192
       disk_gb         = 80
+      root_disk_name  = "vm-k3s-worker-2.qcow2"
+      seed_iso_name   = "vm-k3s-worker-2-seed.iso"
       cloud_init_file = local.cloud_init_templates.vm_k3s_worker
     }
   }
@@ -76,5 +101,15 @@ locals {
     admin_username       = var.admin_username
     admin_ssh_public_key = var.admin_ssh_public_key
     lab_domain           = var.libvirt_network_domain
+  }
+
+  cloud_init_render_context = {
+    for vm_name, vm in local.vm_plan : vm_name => {
+      hostname             = vm.hostname
+      lab_domain           = local.cloud_init_defaults.lab_domain
+      timezone             = local.cloud_init_defaults.timezone
+      admin_username       = local.cloud_init_defaults.admin_username
+      admin_ssh_public_key = local.cloud_init_defaults.admin_ssh_public_key
+    }
   }
 }

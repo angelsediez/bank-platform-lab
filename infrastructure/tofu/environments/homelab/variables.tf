@@ -46,6 +46,30 @@ variable "metallb_address_range_end" {
   default     = "192.168.150.250"
 }
 
+variable "storage_pool_name" {
+  description = "Name of the libvirt storage pool for this lab."
+  type        = string
+  default     = "bank-platform-lab"
+}
+
+variable "storage_pool_path" {
+  description = "Directory-backed libvirt storage pool path."
+  type        = string
+  default     = "/var/lib/libvirt/images/bank-platform-lab"
+}
+
+variable "ubuntu_cloud_image_name" {
+  description = "Filename to use for the cached Ubuntu cloud image volume."
+  type        = string
+  default     = "ubuntu-24.04-server-cloudimg-amd64.img"
+}
+
+variable "ubuntu_cloud_image_url" {
+  description = "Source URL for the Ubuntu 24.04 cloud image."
+  type        = string
+  default     = "https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-24.04-server-cloudimg-amd64.img"
+}
+
 variable "default_timezone" {
   description = "Timezone applied by cloud-init templates."
   type        = string

@@ -5,6 +5,12 @@ libvirt_network_domain      = "lab.internal"
 metallb_address_range_start = "192.168.150.240"
 metallb_address_range_end   = "192.168.150.250"
 
+storage_pool_name = "bank-platform-lab"
+storage_pool_path = "/var/lib/libvirt/images/bank-platform-lab"
+
+ubuntu_cloud_image_name = "ubuntu-24.04-server-cloudimg-amd64.img"
+ubuntu_cloud_image_url  = "https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-24.04-server-cloudimg-amd64.img"
+
 default_timezone     = "UTC"
 admin_username       = "labadmin"
 admin_ssh_public_key = "ssh-ed25519 AAAA...replace-with-your-real-public-key"
